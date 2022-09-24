@@ -1,0 +1,200 @@
+--- xorgxrdp-0.9.19/xrdpkeyb/rdpKeyboard.c.bak	2022-09-24 03:29:43.297527441 +0900
++++ xorgxrdp-0.9.19/xrdpkeyb/rdpKeyboard.c	2022-09-24 05:02:12.408404421 +0900
+@@ -64,16 +64,16 @@
+ #define GLYPHS_PER_KEY 2
+ /* control */
+ #define CONTROL_L_KEY_CODE 37
+-#define CONTROL_R_KEY_CODE 109
++#define CONTROL_R_KEY_CODE 105
+ /* shift */
+ #define SHIFT_L_KEY_CODE 50
+ #define SHIFT_R_KEY_CODE 62
+ /* win keys */
+-#define SUPER_L_KEY_CODE 115
+-#define SUPER_R_KEY_CODE 116
++#define SUPER_L_KEY_CODE 133
++#define SUPER_R_KEY_CODE 134
+ /* alt */
+ #define ALT_L_KEY_CODE 64
+-#define ALT_R_KEY_CODE 113
++#define ALT_R_KEY_CODE 108
+ /* caps lock */
+ #define CAPS_LOCK_KEY_CODE 66
+ /* num lock */
+@@ -82,8 +82,8 @@
+ #define N_PREDEFINED_KEYS \
+     (sizeof(g_kbdMap) / (sizeof(KeySym) * GLYPHS_PER_KEY))
+ 
+-static char g_base_str[] = "base";
+-static char g_pc104_str[] = "pc104";
++static char g_base_str[] = "evdev";
++static char g_pc104_str[] = "pc105";
+ static char g_us_str[] = "us";
+ static char g_empty_str[] = "";
+ static char g_Keyboard_str[] = "Keyboard";
+@@ -307,7 +307,7 @@
+ 
+             if (is_ext)
+             {
+-                x_scancode = 113; /* right alt button */
++                x_scancode = 108; /* right alt button */
+             }
+             else
+             {
+@@ -345,7 +345,7 @@
+             }
+             else
+             {
+-                x_scancode = is_ext ? 109 : 37;
++                x_scancode = is_ext ? 105 : 37;
+                 keyboard->ctrl_down = down ? x_scancode : 0;
+                 rdpEnqueueKey(keyboard->device, type, x_scancode);
+             }
+@@ -356,7 +356,7 @@
+ 
+             if (keyboard->pause_spe)
+             {
+-                x_scancode = 110;
++                x_scancode = 127;
+ 
+                 if (!down)
+                 {
+@@ -365,87 +365,88 @@
+             }
+             else
+             {
+-                x_scancode = keyboard->ctrl_down ? 110 : 77;
++                x_scancode = keyboard->ctrl_down ? 127 : 77;
+             }
+ 
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 28: /* Enter or Return */
+-            x_scancode = is_ext ? 108 : 36;
++            x_scancode = is_ext ? 104 : 36;
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 53: /* / */
+-            x_scancode = is_ext ? 112 : 61;
++            x_scancode = is_ext ? 106 : 61;
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 55: /* * on KP or Print Screen */
+-            x_scancode = is_ext ? 111 : 63;
++            x_scancode = is_ext ? 107 : 63;
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 71: /* 7 or Home */
+-            x_scancode = is_ext ? 97 : 79;
++            x_scancode = is_ext ? 110 : 79;
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 72: /* 8 or Up */
+-            x_scancode = is_ext ? 98 : 80;
++            x_scancode = is_ext ? 111 : 80;
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 73: /* 9 or PgUp */
+-            x_scancode = is_ext ? 99 : 81;
++            x_scancode = is_ext ? 112 : 81;
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 75: /* 4 or Left */
+-            x_scancode = is_ext ? 100 : 83;
++            x_scancode = is_ext ? 113 : 83;
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 77: /* 6 or Right */
+-            x_scancode = is_ext ? 102 : 85;
++            x_scancode = is_ext ? 114 : 85;
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 79: /* 1 or End */
+-            x_scancode = is_ext ? 103 : 87;
++            x_scancode = is_ext ? 115 : 87;
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 80: /* 2 or Down */
+-            x_scancode = is_ext ? 104 : 88;
++            x_scancode = is_ext ? 116 : 88;
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 81: /* 3 or PgDn */
+-            x_scancode = is_ext ? 105 : 89;
++            x_scancode = is_ext ? 117 : 89;
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 82: /* 0 or Insert */
+-            x_scancode = is_ext ? 106 : 90;
++            x_scancode = is_ext ? 118 : 90;
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 83: /* . or Delete */
+-            x_scancode = is_ext ? 107 : 91;
++            x_scancode = is_ext ? 119 : 91;
+             sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
++
+         case 91: /* left win key */
+-            rdpEnqueueKey(keyboard->device, type, 115);
++            rdpEnqueueKey(keyboard->device, type, 133);
+             break;
+ 
+         case 92: /* right win key */
+-            rdpEnqueueKey(keyboard->device, type, 116);
++            rdpEnqueueKey(keyboard->device, type, 134);
+             break;
+ 
+         case 93: /* menu key */
+-            rdpEnqueueKey(keyboard->device, type, 117);
++            rdpEnqueueKey(keyboard->device, type, 135);
+             break;
+ 
+         case 89: /* left meta */
+@@ -456,8 +457,30 @@
+             rdpEnqueueKey(keyboard->device, type, 156);
+             break;
+ 
+-        case 115: /* "/ ?" on br keyboard */
+-            sendDownUpKeyEvent(keyboard->device, type, 211);
++        case 112: /* "Hiragana" on jp106 keyboard */
++            sendDownUpKeyEvent(keyboard->device, type, 101);
++            break;
++
++//        case 115: /* "/ ?" on br keyboard */
++//            sendDownUpKeyEvent(keyboard->device, type, 211);
++//            break;
++
++        case 115: /* "backslash" on jp106 keyboard */
++            x_scancode = is_ext ? 97 : 97;
++            sendDownUpKeyEvent(keyboard->device, type, x_scancode);
++            break;
++
++        case 121: /* "Henkan" on jp106 keyboard */
++            sendDownUpKeyEvent(keyboard->device, type, 100);
++            break;
++
++        case 123: /* "Muhenkan" on jp106 keyboard */
++            sendDownUpKeyEvent(keyboard->device, type, 102);
++            break;
++
++        case 125: /* "yen" on jp106 keyboard */
++            x_scancode = is_ext ? 132 : 132;
++            sendDownUpKeyEvent(keyboard->device, type, x_scancode);
+             break;
+ 
+         case 126: /* . on br keypad */

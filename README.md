@@ -18,7 +18,7 @@ X11 scancode を直接参照する一部のアプリケーションで想定と�
  3. XvncドライバではなくXorgドライバ `xorgxrdp` を用いている。
  4. Linux デスクトップ 上で X11 scancode を参照するアプリケーションを利用している。 
     -  例）
-        - VMware vSphere HyperVisoer の WebGUI版仮想マシンコンソール
+        - VMware vSphere HyperViser の WebGUI版仮想マシンコンソール
         - HPE Proliant Server に搭載された iLO4/5 HTML5 コンソール
 
 ## 具体的に何をするものか
