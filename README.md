@@ -15,7 +15,7 @@ X11 scancode を直接参照する一部のアプリケーションで想定と�
 
  1. 日本語Windows OS上のリモートデスクトップ接続(mstsc.exe)を使っている
  2. Xrdp をインストールしたLinuxデスクトップに接続している。
- 3. XvncドライバではなくXorgドライバ `xorgxrdp` を用いている。
+ 3. XrdpにてバックエンドにVNCではなくXorgを用いている。(`xorgxrdp`を使用している)
  4. Linux デスクトップ 上で X11 scancode を参照するアプリケーションを利用している。 
     -  例）FireFox 等で以下のWebUIに接続する場合
         - VMware vSphere HyperVisor / WebGUI版仮想マシンコンソール
@@ -23,18 +23,18 @@ X11 scancode を直接参照する一部のアプリケーションで想定と�
 
 ## 具体的に何をするものか
 - xorgxrdp の input driver を base から evdev に変更します。
-- JP106/109日本語キーボードの以下のキーが生成するX11 scancode を変更します。
+- 以下のキーが生成するX11 scancode を変更します。
 
 |キー名称|標準<BR>xorgxrdp<BR>X11 Scancode|パッチ適用済み<BR>xorgxrdp<BR>X11 Scancode|備考|
 |:------------:|:------------:|:------------:|:------------:|
 |右 Ctrl     |109|105||
 |右 ALT  |113|106||
-|左Windows |115|133|X11 Scancode は左右Winで同一に|
-|右Windows  |116|133|X11 Scancode は左右Winで同一に|
+|左 Windows |115|133||
+|右 Windows  |116|133||
 |Menu|117|135||
 | /  |112|106||
-|\\(backslash)|-|97|右shiftの左側の位置「ろ」のキー|
-|\\(yen)|-|125|BackSpace左側の位置「￥」キー|
+|\\ (backslash)|-|97|右shiftの左側の位置「ろ」のキー|
+|\\ (yen)|-|125|BackSpace左側の位置「￥」キー|
 |Enter|108|104||
 |PrintScreen|111|107||
 |Insert|106|118||
@@ -43,22 +43,24 @@ X11 scancode を直接参照する一部のアプリケーションで想定と�
 |End|103|115||
 |PageUp|99|112||
 |PageDown|105|117||
-|カーソル上↑|98|111||
-|カーソル左←|100|113||
-|カーソル右→|102|114||
-|カーソル下↓|104|116||
+|カーソル上  ↑|98|111||
+|カーソル左  ←|100|113||
+|カーソル右  →|102|114||
+|カーソル下  ↓|104|116||
 |ひらがな|-|101||
 |変換|-|100||
 |無変換|-|102||
 
 ## upstreamに PR できない理由
-JP106/109日本語キーボードを前提としたパッチとなっているためです。
+このパッチは日本語環境における特定のアプリケーションの問題を解消することを目的としたWorkaroundパッチで、他言語のことを考慮していないからです。
 
-US/UK英語など、標準的な101/104 ASCII配列キーボードレイアウトのキーボードの場合にはこのパッチはおそらく衝突しませんが、全ての言語・キーボードでのテストを実施しておりません。
+具体的には[ブラジル配列のポルトガル語キーボード](https://ja.wikipedia.org/wiki/ポルトガル語キー配列#/media/ファイル:KB_Portuguese_Brazil_text.svg)の [/ ?] キーの[既存の定義](https://github.com/neutrinolabs/xorgxrdp/blob/devel/xrdpkeyb/rdpKeyboard.c#L458-L462)が日本語JP106/109キーボードのBakcSpace左側の位置の「￥」キー と衝突するため、このパッチでは強引に上書き処理してしまっています。
 
-具体的な問題としては、[ブラジル配列のポルトガル語キーボード](https://ja.wikipedia.org/wiki/ポルトガル語キー配列#/media/ファイル:KB_Portuguese_Brazil_text.svg)の [?] キーの既存の定義が日本語JP106/109キーボードのBakcSpace左側の位置の「￥」キー と衝突するため、このパッチでは強引に上書き処理してしまっています。
+US/UK英語など、標準的な101/104 ASCII配列のキーボードの場合にはこのパッチはおそらく衝突しませんが、全ての言語・キーボードでのテストを実施しておりません。
 
-### テスト済み環境
+xorgxrdp側で言語を判定して処理を変更する処理を加えるなどして将来的にはupstreamへのPRを上げたいと考えています。
+
+## テスト済み環境
 |パッチ有用性|通常のX11アプリ使用|言語|OS|キーボードレイアウト|製品名|備考|
 |:----:|:----:|:----:|:----:|:----:|:----:|:----:|
 |◎|○|日本語|Windows10 Pro 21H2 | JP109|Logicool MX800|右Windowsキー、メニューキーなし|
@@ -67,7 +69,7 @@ US/UK英語など、標準的な101/104 ASCII配列キーボードレイアウ�
 
 ## 既知の事象
   - JIS日本語キーボードを取り付けたmacOS Monterey で Microsoft RemoteDesktop Client にて接続したとき、 [￥] キーが効かない。
-    - [Option] キー+[ ￥] で代用してください。
+    - ワークアラウンド： [Option] キー+[ ￥] で代用してください。
 
 ## 参考URL
 - [XRDP Keyboard evdev support? #211](https://github.com/neutrinolabs/xorgxrdp/issues/211)
