@@ -30,7 +30,7 @@ X11 scancode を直接参照する一部のアプリケーションで想定と�
 |右 Ctrl     |109|105||
 |右 ALT  |113|106||
 |左 Windows |115|133||
-|右 Windows  |116|133||
+|右 Windows  |116|134||
 |Menu|117|135||
 | /  |112|106||
 |\\ (backslash)|-|97|右shiftの左側の位置「ろ」のキー|
@@ -58,18 +58,19 @@ X11 scancode を直接参照する一部のアプリケーションで想定と�
 
 US/UK英語など、標準的な101/104 ASCII配列のキーボードの場合にはこのパッチはおそらく衝突しませんが、全ての言語・キーボードでのテストを実施しておりません。
 
-xorgxrdp側で言語を判定して処理を変更する処理を加えるなどして将来的にはupstreamへのPRを上げたいと考えています。
+(xorgxrdp側で言語を判定して処理を変更するコードを加えるなどして将来的にはupstreamへのPRを上げてみたいと考えてはいます。)
 
 ## テスト済み環境
 |パッチ有用性|通常のX11アプリ使用|言語|OS|キーボードレイアウト|製品名|備考|
 |:----:|:----:|:----:|:----:|:----:|:----:|:----:|
-|◎|○|日本語|Windows10 Pro 21H2 | JP109|Logicool MX800|右Windowsキー、メニューキーなし|
-|○|○|日本語|Windows10 Home 21H2 | US104|CHUWI Hi10pro <BR>専用キーボード|テストの範囲では支障なし|
-|×|▲|日本語|macOS Monterey| JIS|MacBook Pro 2020(M1)|setxmodmap で layoutがusで認識される。<BR>[￥]キーが効かない|
+|○|○|日本語|Windows10 Pro 21H2 | JP109|Logicool MX800|右Windowsキー、メニューキーがないため積極的なテストはできていない。|
+|○|○|日本語|Windows10 Home 21H2 | US104|CHUWI Hi10pro <BR>専用キーボード|J106/109特有のキーコードは重複しない。テストの範囲では支障なし|
+|×|▲|日本語|macOS Monterey| JIS|MacBook Pro 13' 2020(M1)|setxmodmap -queryで layoutがusで認識される。<BR>[￥]キーが効かない|
 
 ## 既知の事象
   - JIS日本語キーボードを取り付けたmacOS Monterey で Microsoft RemoteDesktop Client にて接続したとき、 [￥] キーが効かない。
     - ワークアラウンド： [Option] キー+[ ￥] で代用してください。
+  - テンキーのNumロックが効かない。常に数字入力になる。
 
 ## 参考URL
 - [XRDP Keyboard evdev support? #211](https://github.com/neutrinolabs/xorgxrdp/issues/211)
