@@ -3,12 +3,12 @@ evdev patched xorgxrdp for JP106/109 Japanese keyboard<BR>
 based on a patch by [@mhoffmann75](https://github.com/mhoffmann75)
 
 ## これは何か？
-106/109日本語キーボードのX11 scancode を送信できるようにパッチを適用したxorgxrdp です。<br>
+106/109日本語キーボードのX11 scancode を送信できるように[パッチ](https://github.com/TOMATO-ONE/xorgxrdp-evdev-jp/blob/main/code/xorgxrdp_fix_jp106key_scancode.patch)を適用した[xorgxrdp](https://github.com/neutrinolabs/xorgxrdp) です。<br>
 CentOS6/7, RockyLinux8/9 のRPM/SRPM で、Xrdp 0.9.20 に対応します。
 
-xorgxrdp version 0.9.19 は カーソルキー等一部のX11のscancode にズレが生じています。
+xorgxrdp は カーソルキー等一部のX11のscancode にズレが生じています。
 通常のX11アプリケーションではkeysymの値を使うため実質的な問題は起きませんが、
-X11 scancode を直接参照する一部のアプリケーションで想定と異なるキーが押される状態になります。<br>
+X11 scancode を直接参照する一部のアプリケーションで想定と異なるキーが押される状態になります。(具体例：カーソルキーの下 ↓ 押下で Enter が入力される)<br>
 このパッチを適用したxorgxrdpはX11 scancode を参照する一部のアプリケーションにおいて正しいキー入力を行えるようになります。
 
 以下の４つの条件全てに当てはまる場合にこのパッチ適用済みxorgxrdpが意味を持ちます。
@@ -26,15 +26,15 @@ X11 scancode を直接参照する一部のアプリケーションで想定と�
 - 以下のキーが生成するX11 scancode を変更します。
 
 |キー名称|標準<BR>xorgxrdp<BR>X11 Scancode|パッチ適用済み<BR>xorgxrdp<BR>X11 Scancode|備考|
-|:------------:|:------------:|:------------:|:------------:|
+|:------------:|:------------:|:------------:|:------------|
 |右 Ctrl     |109|105||
 |右 ALT  |113|106||
 |左 Windows |115|133||
 |右 Windows  |116|134||
 |Menu|117|135||
 | /  |112|106||
-|\\ (backslash)|-|97|右shiftの左側の位置「ろ」のキー|
-|\\ (yen)|-|125|BackSpace左側の位置「￥」キー|
+|￥ (yen)|-|132|BackSpace左側の位置「￥」キー<BR>\ (backslash)が入力される|
+|\\ (backslash)|-|97|右shiftの左側の位置「ろ」のキー<BR>ブラジル配列ポルトガル語キーボードの[/ ?]と同一 keycode|
 |Enter|108|104||
 |PrintScreen|111|107||
 |Insert|106|118||
@@ -54,7 +54,7 @@ X11 scancode を直接参照する一部のアプリケーションで想定と�
 ## upstreamに PR できない理由
 このパッチは日本語環境における特定のアプリケーションの問題を解消することを目的としたWorkaroundパッチで、他言語のことを考慮していないからです。
 
-具体的には[ブラジル配列のポルトガル語キーボード](https://ja.wikipedia.org/wiki/ポルトガル語キー配列#/media/ファイル:KB_Portuguese_Brazil_text.svg)の [/ ?] キーの[既存の定義](https://github.com/neutrinolabs/xorgxrdp/blob/devel/xrdpkeyb/rdpKeyboard.c#L458-L462)が日本語JP106/109キーボードのBakcSpace左側の位置の「￥」キー と衝突するため、このパッチでは強引に上書き処理してしまっています。
+具体的には[ブラジル配列のポルトガル語キーボード](https://ja.wikipedia.org/wiki/ポルトガル語キー配列#/media/ファイル:KB_Portuguese_Brazil_text.svg)の [/ ?] キーの[既存の定義](https://github.com/neutrinolabs/xorgxrdp/blob/devel/xrdpkeyb/rdpKeyboard.c#L458-L462)が日本語JP106/109キーボードの右shiftkey左側の位置の「\」キー と衝突するため、このパッチでは強引に上書き処理してしまっています。
 
 US/UK英語など、標準的な101/104 ASCII配列のキーボードの場合にはこのパッチはおそらく衝突しませんが、全ての言語・キーボードでのテストを実施しておりません。
 
