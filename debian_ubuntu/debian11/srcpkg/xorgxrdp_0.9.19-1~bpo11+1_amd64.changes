@@ -1,0 +1,28 @@
+Format: 1.8
+Date: Sun, 02 Oct 2022 12:44:24 +0000
+Source: xorgxrdp
+Binary: xorgxrdp xorgxrdp-dbgsym
+Architecture: amd64
+Version: 0.9.19-1~bpo11+1
+Distribution: bullseye-backports
+Urgency: medium
+Maintainer: Debian Remote Maintainers <debian-remote@lists.debian.org>
+Changed-By: Junker TOMATO <junker.tomato@gmail.com>
+Description:
+ xorgxrdp   - Remote Desktop Protocol (RDP) modules for X.org
+Changes:
+ xorgxrdp (0.9.19-1~bpo11+1) bullseye-backports; urgency=medium
+ .
+   * evdev patched xorgxrdp for JP106/109 Japanese keyboard
+Checksums-Sha1:
+ 01d1538fbcdfd2aeedd9cdf54ecc249342375514 241268 xorgxrdp-dbgsym_0.9.19-1~bpo11+1_amd64.deb
+ 89f9e8f31d44c7c31c132c5d2127627e2e184bce 9233 xorgxrdp_0.9.19-1~bpo11+1_amd64.buildinfo
+ 70003c85373e57b46eee3dccf4ab91078170c174 61232 xorgxrdp_0.9.19-1~bpo11+1_amd64.deb
+Checksums-Sha256:
+ a4fcf75e84fd8baa8bbbf6f4b23e665e5519696cef718568c49d8d209beb892f 241268 xorgxrdp-dbgsym_0.9.19-1~bpo11+1_amd64.deb
+ 5235d990db1530bca03b59a29832c7ed7098530e213b79665530c0776e3f080f 9233 xorgxrdp_0.9.19-1~bpo11+1_amd64.buildinfo
+ 18a038d4365a5ad6f7f31189b44fabc395b24d3d8879dac8761568dc2e85c027 61232 xorgxrdp_0.9.19-1~bpo11+1_amd64.deb
+Files:
+ 3684f3a8a13542b30de8a6ea35f712e3 241268 debug optional xorgxrdp-dbgsym_0.9.19-1~bpo11+1_amd64.deb
+ 6e9409c7443354e665db395ec495cebb 9233 net optional xorgxrdp_0.9.19-1~bpo11+1_amd64.buildinfo
+ 3a6bf7ce49833c5615980226c2f4be4a 61232 net optional xorgxrdp_0.9.19-1~bpo11+1_amd64.deb

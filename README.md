@@ -4,7 +4,7 @@ based on a patch by [@mhoffmann75](https://github.com/mhoffmann75)
 
 ## これは何か？
 106/109日本語キーボードのX11 scancode を送信できるように[パッチ](https://github.com/TOMATO-ONE/xorgxrdp-evdev-jp/blob/main/code/xorgxrdp_fix_jp106key_scancode.patch)を適用した[xorgxrdp](https://github.com/neutrinolabs/xorgxrdp) です。<br>
-CentOS6/7, RockyLinux8/9 のRPM/SRPM で、Xrdp 0.9.20 に対応します。
+CentOS6/7, RockyLinux8/9 のRPM/SRPM と Debian GNU/Linux 11 の deb で、Xrdp 0.9.20 に対応します。
 
 xorgxrdp は カーソルキー等一部のX11のscancode にズレが生じています。
 通常のX11アプリケーションではkeysymの値を使うため実質的な問題は起きませんが、
