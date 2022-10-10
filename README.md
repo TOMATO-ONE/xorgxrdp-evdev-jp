@@ -4,12 +4,24 @@ based on a patch by [@mhoffmann75](https://github.com/mhoffmann75)
 
 ## これは何か？
 106/109日本語キーボードのX11 scancode を送信できるように[パッチ](https://github.com/TOMATO-ONE/xorgxrdp-evdev-jp/blob/main/code/xorgxrdp_fix_jp106key_scancode.patch)を適用した[xorgxrdp](https://github.com/neutrinolabs/xorgxrdp) です。<br>
-CentOS6/7, RockyLinux8/9 のRPM/SRPM と Debian GNU/Linux 11 の deb で、Xrdp 0.9.20 に対応します。
+Martin Hoffmann 氏[@mhoffmann75](https://github.com/mhoffmann75)作成の[パッチ](https://github.com/mhoffmann75/xorgxrdp/commit/16b8fbdc3345a0caa56cb9109790ab6dbe6df892)に106/109日本語キーボード向けの定義を加えたものでXrdp 0.9.20 に対応します。
+以下のディストリビューション用バイナリ及びソースパッケージを用意しています。
+
+|ディストリビューション|バージョン|アーキテクチャ|パス|
+|:------------:|:------------:|:------------:|:------------:|
+|CentOS|6|x86_64|[=>](https://github.com/TOMATO-ONE/xorgxrdp-evdev-jp/tree/main/centos_rockylinux/el6)|
+|CentOS|7|x86_64|[=>](https://github.com/TOMATO-ONE/xorgxrdp-evdev-jp/tree/main/centos_rockylinux/el7)|
+|Rocky Linux|8|x86_64|[=>](https://github.com/TOMATO-ONE/xorgxrdp-evdev-jp/tree/main/centos_rockylinux/el8)|
+|Rocky Linux|9|x86_64|[=>](https://github.com/TOMATO-ONE/xorgxrdp-evdev-jp/tree/main/centos_rockylinux/el9)|
+|Ubuntu Linux|20.04 LTS|amd64|[=>](https://github.com/TOMATO-ONE/xorgxrdp-evdev-jp/tree/main/debian_ubuntu/ubuntu2004)|
+|Ubuntu Linux|22.04 LTS|amd64|[=>](https://github.com/TOMATO-ONE/xorgxrdp-evdev-jp/tree/main/debian_ubuntu/ubuntu2204)|
+|debian GNU/Linux|11 ( bullseye ) |amd64|[=>](https://github.com/TOMATO-ONE/xorgxrdp-evdev-jp/tree/main/debian_ubuntu/debian11)|
+
 
 xorgxrdp は カーソルキー等一部のX11のscancode にズレが生じています。
 通常のX11アプリケーションではkeysymの値を使うため実質的な問題は起きませんが、
 X11 scancode を直接参照する一部のアプリケーションで想定と異なるキーが押される状態になります。(具体例：カーソルキーの下 ↓ 押下で Enter が入力される)<br>
-このパッチを適用したxorgxrdpはX11 scancode を参照する一部のアプリケーションにおいて正しいキー入力を行えるようになります。
+この、パッチを適用したxorgxrdpはX11 scancode を参照する一部のアプリケーションにて正しいキー入力が行えるようになります。
 
 以下の４つの条件全てに当てはまる場合にこのパッチ適用済みxorgxrdpが意味を持ちます。
 
@@ -61,11 +73,11 @@ US/UK英語など、標準的な101/104 ASCII配列のキーボードの場合�
 (xorgxrdp側で言語を判定して処理を変更するコードを加えるなどして将来的にはupstreamへのPRを上げてみたいと考えてはいます。)
 
 ## テスト済み環境
-|パッチ有用性|通常のX11アプリ使用|言語|OS|キーボードレイアウト|製品名|備考|
-|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
-|○|○|日本語|Windows10 Pro 21H2 | JP109|Logicool MX800|右Windowsキー、メニューキーがないため積極的なテストはできていない。|
-|○|○|日本語|Windows10 Home 21H2 | US104|CHUWI Hi10pro <BR>専用キーボード|J106/109特有のキーコードは重複しない。テストの範囲では支障なし|
-|×|▲|日本語|macOS Monterey| JIS|MacBook Pro 13' 2020(M1)|setxmodmap -queryで layoutがusで認識される。<BR>[￥]キーが効かない|
+|パッチ有用性|通常のX11アプリ使用|言語|OS|キーボードレイアウト|キーボード製品名|RDPクライアントソフト|備考|
+|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
+|○|○|日本語|Windows10 Pro 21H2 | JP109|Logicool MX800|mstsc.exe|右Windowsキー、メニューキーがないため積極的なテストはできていない。|
+|○|○|日本語|Windows10 Home 21H2 | US104|CHUWI Hi10pro <BR>専用キーボード|mstsc.exe|J106/109特有のキーコードは重複しない。テストの範囲では支障なし|
+|×|▲|日本語|macOS Monterey| JIS|MacBook Pro 13' 2020(M1)<BR>内蔵JISキーボード|Microsoft Remote Desktop Client|setxmodmap -queryで layoutがusで認識される。<BR>[￥]キーが効かない|
 
 ## 既知の事象
   - JIS日本語キーボードを取り付けたmacOS Monterey で Microsoft RemoteDesktop Client にて接続したとき、 [￥] キーが効かない。
