@@ -1,6 +1,6 @@
 Name:           xorgxrdp
 Epoch:		2
-Version:        0.9.19
+Version:        0.9.20
 Release:        1%{?dist}
 Summary:        Implementation of xrdp backend as Xorg modules
 
@@ -12,33 +12,87 @@ Patch0:		xorgxrdp_fix_jp106key_scancode.patch
 BuildRequires: make
 BuildRequires:  nasm
 BuildRequires:  xorg-x11-server-devel
-BuildRequires:  xrdp-devel >= 1:0.9.17
+BuildRequires:  xrdp-devel >= 1:0.9.25
 %if 0%{?fedora} > 0 && 0%{?fedora} <= 24
 BuildRequires:  libXfont-devel
 %else
 BuildRequires:  libXfont2-devel
 %endif
-Requires:       Xorg %(xserver-sdk-abi-requires videodrv)
-Requires:       Xorg %(xserver-sdk-abi-requires xinput)
 
+%if 0%{?fedora} >= 35 || 0%{?rhel} >= 8
+BuildRequires:  mesa-libgbm-devel
+BuildRequires:  libepoxy-devel
+BuildRequires:  libdrm-devel
+BuildRequires:  autoconf
+BuildRequires:  automake
+BuildRequires:  libtool
+
+Conflicts: %{name}-glamor
+%endif
+
+Requires:       Xorg %(xserver-sdk-abi-requires videodrv 2>/dev/null)
+Requires:       Xorg %(xserver-sdk-abi-requires xinput 2>/dev/null)
+
+%if 0%{?fedora} >= 35 || 0%{?rhel} >= 8
+%package glamor
+Summary:        Implementation of xrdp backend as Xorg modules with glamor
+RemovePathPostfixes: .glamor
+Conflicts: %{name}
+
+Requires:       Xorg %(xserver-sdk-abi-requires videodrv 2>/dev/null)
+Requires:       Xorg %(xserver-sdk-abi-requires xinput 2>/dev/null)
+%endif
 
 %description
 xorgxrdp is a set of X11 modules that make Xorg act as a backend for
 xrdp. Xorg with xorgxrdp is the most advanced xrdp backend with support
 for screen resizing and multiple monitors.
 
+%if 0%{?fedora} >= 35 || 0%{?rhel} >= 8
+%description glamor
+xorgxrdp is a set of X11 modules that make Xorg act as a backend for
+xrdp. Xorg with xorgxrdp is the most advanced xrdp backend with support
+for screen resizing and multiple monitors. Built with glamor support.
+%endif
+
 %prep
 %autosetup -p1
 
-
 %build
-%configure
+autoreconf -i
+
+%if 0%{?fedora} >= 35 || 0%{?rhel} >= 8
+# Build/install with glamor support first
+CFLAGS="$RPM_OPT_FLAGS -I/usr/include/libdrm" \
+%configure --enable-glamor
 %make_build
 
+# Preserve glamor files
+%{__mv} xrdpdev/.libs/xrdpdev_drv.so xrdpdev_drv.so.glamor
+%{__mv} xrdpkeyb/.libs/xrdpkeyb_drv.so xrdpkeyb_drv.so.glamor
+%{__mv} xrdpmouse/.libs/xrdpmouse_drv.so xrdpmouse_drv.so.glamor
+%{__mv} module/.libs/libxorgxrdp.so libxorgxrdp.so.glamor
+
+%{__make} clean
+%endif
+
+# Regular build
+%configure
+%make_build
 
 %install
 %make_install
 
+%if 0%{?fedora} >= 35 || 0%{?rhel} >= 8
+# Install glamor files
+%{__install} -p xrdpdev_drv.so.glamor %{buildroot}%{_libdir}/xorg/modules/drivers
+%{__install} -p xrdpkeyb_drv.so.glamor %{buildroot}%{_libdir}/xorg/modules/input
+%{__install} -p xrdpmouse_drv.so.glamor %{buildroot}%{_libdir}/xorg/modules/input
+%{__install} -p libxorgxrdp.so.glamor %{buildroot}%{_libdir}/xorg/modules
+%{__sed} '/^[[:blank:]]*Load "xorgxrdp"/i\    Load "glamoregl"' \
+         %{buildroot}%{_sysconfdir}/X11/xrdp/xorg.conf > \
+         %{buildroot}%{_sysconfdir}/X11/xrdp/xorg.conf.glamor
+%endif
 
 %files
 %license COPYING
@@ -56,10 +110,49 @@ for screen resizing and multiple monitors.
 %exclude %{_libdir}/xorg/modules/drivers/*.a
 %exclude %{_libdir}/xorg/modules/drivers/*.la
 
+%if 0%{?fedora} >= 35 || 0%{?rhel} >= 8
+%files glamor
+%license COPYING
+%doc README.md
+%dir %{_sysconfdir}/X11/xrdp
+%{_sysconfdir}/X11/xrdp/xorg.conf.glamor
+%{_libdir}/xorg/modules/drivers/xrdpdev_drv.so.glamor
+%{_libdir}/xorg/modules/input/xrdpkeyb_drv.so.glamor
+%{_libdir}/xorg/modules/input/xrdpmouse_drv.so.glamor
+%{_libdir}/xorg/modules/libxorgxrdp.so.glamor
+%exclude %{_libdir}/xorg/modules/*.a
+%exclude %{_libdir}/xorg/modules/*.la
+%exclude %{_libdir}/xorg/modules/input/*.a
+%exclude %{_libdir}/xorg/modules/input/*.la
+%exclude %{_libdir}/xorg/modules/drivers/*.a
+%exclude %{_libdir}/xorg/modules/drivers/*.la
+%endif
 
 %changelog
-* Sat Sep 24 2022 TOMATO-ONE <junker.tomato@gmail.com> 2:0.9.19-1
+* Wed May 15 2024 TOMATO-ONE <junker.tomato@gmail.com> 2:0.9.20-1
 - fix JP106 keyboard scancode
+
+* Tue Mar 12 2024 Bojan Smojver <bojan@rexursive.com> - 0.9.20-1
+- Bump up to 0.9.20
+
+* Sat Jan 27 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.9.19-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Wed Jul 26 2023 Bojan Smojver <bojan@rexursive.com> - 0.9.19-7
+- run autoreconf before build, to avoid problems on F39
+
+* Sat Jul 22 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.9.19-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Sat Jan 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.9.19-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Mon Nov 14 2022 Bojan Smojver <bojan@rexursive.com> - 0.9.19-5
+- Insert glamoregl module into xorg.conf for glamor package
+- Add missed Xorg server dependencies into glamor package
+
+* Fri Nov  4 2022 Bojan Smojver <bojan@rexursive.com> - 0.9.19-4
+- Build alternative binary with glamor enabled
 
 * Sat Sep 10 2022 Bojan Smojver <bojan@rexursive.com> - 0.9.19-1
 - Bump up to 0.9.19
