@@ -1,18 +1,18 @@
 Name:           xorgxrdp
-Epoch:		2
-Version:        0.9.20
-Release:        1%{?dist}
+Epoch:		      2
+Version:        0.10.3
+Release:        5%{?dist}
 Summary:        Implementation of xrdp backend as Xorg modules
 
 License:        MIT
 URL:            https://github.com/neutrinolabs/xorgxrdp
 Source0:        https://github.com/neutrinolabs/xorgxrdp/releases/download/v%{version}/%{name}-%{version}.tar.gz
-Patch0:		xorgxrdp_fix_jp106key_scancode.patch
+Patch0:         xorgxrdp_fix_jp106key_scancode.patch
 
-BuildRequires: make
+BuildRequires:  make
 BuildRequires:  nasm
 BuildRequires:  xorg-x11-server-devel
-BuildRequires:  xrdp-devel >= 1:0.9.25
+BuildRequires:  xrdp-devel >= 1:0.10.2
 %if 0%{?fedora} > 0 && 0%{?fedora} <= 24
 BuildRequires:  libXfont-devel
 %else
@@ -30,8 +30,12 @@ BuildRequires:  libtool
 Conflicts: %{name}-glamor
 %endif
 
+Requires:       xrdp >= 1:0.10.2
 Requires:       Xorg %(xserver-sdk-abi-requires videodrv 2>/dev/null)
 Requires:       Xorg %(xserver-sdk-abi-requires xinput 2>/dev/null)
+%if 0%{?fedora} >= 35 || 0%{?rhel} >= 8
+Requires:       xorg-x11-server-Xorg
+%endif
 
 %if 0%{?fedora} >= 35 || 0%{?rhel} >= 8
 %package glamor
@@ -39,8 +43,10 @@ Summary:        Implementation of xrdp backend as Xorg modules with glamor
 RemovePathPostfixes: .glamor
 Conflicts: %{name}
 
+Requires:       xrdp >= 1:0.10.2
 Requires:       Xorg %(xserver-sdk-abi-requires videodrv 2>/dev/null)
 Requires:       Xorg %(xserver-sdk-abi-requires xinput 2>/dev/null)
+Requires:       xorg-x11-server-Xorg
 %endif
 
 %description
@@ -129,11 +135,40 @@ CFLAGS="$RPM_OPT_FLAGS -I/usr/include/libdrm" \
 %endif
 
 %changelog
-* Wed May 15 2024 TOMATO-ONE <junker.tomato@gmail.com> 2:0.9.20-1
+* Mon Mar 10 2025 TOMATO-ONE <junker.tomato@gmail.com> 2:0.10.3-5
 - fix JP106 keyboard scancode
+* Sun Dec 29 2024 Bojan Smojver <bojan@rexursive.com> - 0.10.3-5
+- Change /usr/libexec/Xorg dependency to xorg-x11-server-Xorg
+
+* Thu Dec 26 2024 Bojan Smojver <bojan@rexursive.com> - 0.10.3-2
+- Add /usr/libexec/Xorg dependency
+
+* Mon Dec 16 2024 Bojan Smojver <bojan@rexursive.com> - 0.10.3-1
+- Bump up to 0.10.3
+
+* Fri Sep 27 2024 Sérgio Basto <sergio@serjux.com> - 0.10.2-2
+- Rebuild for rebase of xorg-server to versions 21.1.x
+
+* Wed Jul 31 2024 Bojan Smojver <bojan@rexursive.com> - 0.10.2-1
+- Bump up to 0.10.2
+
+* Sat Jul 20 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.10.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
+
+* Wed May 15 2024 Bojan Smojver <bojan@rexursive.com> - 0.10.1-1
+- Bump up to 0.10.1
+
+* Tue May 14 2024 Bojan Smojver <bojan@rexursive.com> - 0.10.0-4
+- Rebuild against xrdp 0.10.0
+
+* Wed Apr 03 2024 Bojan Smojver <bojan@rexursive.com> - 0.10.0-2
+- Rebuild against xrdp 0.10.0-beta.2
 
 * Tue Mar 12 2024 Bojan Smojver <bojan@rexursive.com> - 0.9.20-1
 - Bump up to 0.9.20
+
+* Mon Mar 11 2024 Bojan Smojver <bojan@rexursive.com> - 0.10.0-1
+- Update to 0.10.0
 
 * Sat Jan 27 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.9.19-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
