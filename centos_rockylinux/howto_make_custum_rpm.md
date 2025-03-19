@@ -16,7 +16,7 @@ yumdownloader --enablerepo=epel-source --source xorgxrdp
 
 ## src rpm のインストール
 ```bash
-rpm -Uvh xorgxrdp-0.9.19-1.el8.src.rpm
+rpm -Uvh xorgxrdp-0.10.3-5.el9.src.rpm
 
 ```
 ホームディレクトリに、rpmbuild ディレクトリとともにSOURCE.SPECS のサブディレクトリが作成され、ソースコードやSPECファイルが展開される。
@@ -53,7 +53,7 @@ rpmbuild -bb ~/rpmbuild/SPECS/xorgxrdp.spec
 
 src rpmも作成する場合
 ```bash
-rpmbuild -bb ~/rpmbuild/SPECS/xorgxrdp.spec
+rpmbuild -ba ~/rpmbuild/SPECS/xorgxrdp.spec
 ```
 
 ~/rpmbuild/RPMS/x86_64/ 　以下にrpm パッケージが、<BR>
